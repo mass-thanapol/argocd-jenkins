@@ -11,8 +11,7 @@ RUN jenkins-plugin-cli \
     git \
     github \
     docker \
-    credentials \
-    pipeline-stage-step
+    credentials
 
 USER jenkins
 
