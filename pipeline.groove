@@ -1,7 +1,7 @@
 pipeline {
   agent any
-  tools {
-    'org.jenkinsci.plugins.docker.commons.tools.DockerTool' '18.09'
+  environment {
+    DOCKERHUB_CREDENTIALS = credentials('massthanapol-dockerhub-id')
   }
   stages {
     stage('Checkout') {
@@ -9,24 +9,36 @@ pipeline {
         checkout([$class: 'GitSCM', branches: [[name: '*/main']], userRemoteConfigs: [[url: 'https://github.com/mass-thanapol/argocd-source-code.git']]])
       }
     }
+    stage('Login Docker') {
+      steps {
+        sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+      }
+    }
     stage('Build and Push app-a') {
       steps {
-        script {
-          sh 'docker build -t massthanapol/app-a .'
-          sh 'docker push massthanapol/app-a'
+        dir('app-a') {
+          script {
+            sh 'docker build -t massthanapol/app-a .'
+            sh 'docker push massthanapol/app-a'
+          }
         }
       }
     }
     stage('Build and Push app-b') {
       steps {
-        script {
-          sh 'docker build -t massthanapol/app-b .'
-          sh 'docker push massthanapol/app-b'
+        dir('app-b') {
+          script {
+            sh 'docker build -t massthanapol/app-b .'
+            sh 'docker push massthanapol/app-b'
+          }
         }
       }
     }
   }
   post {
+    always {
+      sh 'docker logout'
+    }
     success {
       echo 'Build and push successful!'
     }
