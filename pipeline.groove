@@ -1,5 +1,8 @@
 pipeline {
   agent any
+  tools {
+    'org.jenkinsci.plugins.docker.commons.tools.DockerTool' '18.09'
+  }
   stages {
     stage('Checkout') {
       steps {
@@ -8,7 +11,7 @@ pipeline {
     }
     stage('Build and Push app-a') {
       steps {
-        dir('app-a') {
+        script {
           sh 'docker build -t massthanapol/app-a .'
           sh 'docker push massthanapol/app-a'
         }
@@ -16,7 +19,7 @@ pipeline {
     }
     stage('Build and Push app-b') {
       steps {
-        dir('app-b') {
+        script {
           sh 'docker build -t massthanapol/app-b .'
           sh 'docker push massthanapol/app-b'
         }
