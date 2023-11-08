@@ -1,5 +1,0 @@
-git
-github
-docker
-credentials
-pipeline-stage-step
