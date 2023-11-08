@@ -1,4 +1,4 @@
-FROM jenkins/jenkins:alpine
+FROM jenkins/jenkins:lts-jdk17
 
 ENV JENKINS_USER admin
 ENV JENKINS_PASS password
